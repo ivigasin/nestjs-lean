@@ -6,6 +6,8 @@ import { LeanModule, LeanService } from "../src";
 
 // Real Lean: needs `lake` on PATH. The first run fetches and builds the REPL (minutes).
 const SETUP_TIMEOUT = 30 * 60_000;
+// AutoLeanServer restarts at 80% system memory by default; a busy dev machine sits there already.
+const maxTotalMemory = 0.99;
 
 for (const mode of ["auto", "single", "pool"] as const) {
   describe(`LeanService end to end (${mode})`, { timeout: SETUP_TIMEOUT }, () => {
@@ -14,7 +16,14 @@ for (const mode of ["auto", "single", "pool"] as const) {
 
     before(async () => {
       moduleRef = await Test.createTestingModule({
-        imports: [LeanModule.forRoot({ mode, config: { verbose: true }, poolOptions: { numWorkers: 2 } })],
+        imports: [
+          LeanModule.forRoot({
+            mode,
+            config: { verbose: true },
+            serverOptions: { maxTotalMemory },
+            poolOptions: { numWorkers: 2, maxTotalMemory },
+          }),
+        ],
       }).compile();
       moduleRef.enableShutdownHooks();
       await moduleRef.init();

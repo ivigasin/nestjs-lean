@@ -84,6 +84,11 @@ LeanModule.forRoot({
 });
 ```
 
+`AutoLeanServer` (in `"auto"` and `"pool"` modes) restarts the REPL when system-wide memory use
+reaches `maxTotalMemory` (default `0.8`). On a busy machine, especially macOS, used memory can sit
+at that level, and requests then fail with `MemoryError` after repeated restarts: raise
+`maxTotalMemory` in `serverOptions` / `poolOptions`, or use `"single"` mode.
+
 ### Async configuration and projects
 
 `lean-interact` is ESM-only. `nestjs-lean` loads it with a dynamic `import()` and exposes the
