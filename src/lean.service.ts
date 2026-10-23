@@ -113,6 +113,15 @@ export class LeanService implements OnApplicationShutdown {
     return results;
   }
 
+  /**
+   * Whether a result is a `LeanError` (the REPL itself failed, as opposed to Lean reporting errors
+   * in your code). Narrows the type, and works in CommonJS apps that cannot import `lean-interact`'s
+   * `LeanError` class statically.
+   */
+  isError(result: unknown): result is LeanError {
+    return result instanceof this.lean.LeanError;
+  }
+
   /** Kill the REPL process(es). The next request starts a new server. */
   async close(): Promise<void> {
     const backend = this.backend;

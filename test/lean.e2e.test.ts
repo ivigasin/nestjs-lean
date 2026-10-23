@@ -46,6 +46,12 @@ for (const mode of ["auto", "single", "pool"] as const) {
       assert.equal((res as { hasErrors(): boolean }).hasErrors(), true);
     });
 
+    it("returns a LeanError for an unknown environment", async () => {
+      const res = await lean.command({ cmd: "#eval 1", env: 999 });
+      assert.ok(lean.isError(res), JSON.stringify(res));
+      assert.match(res.message, /unknown environment/i);
+    });
+
     if (mode !== "pool") {
       it("closes a sorry with a proof step", async () => {
         const thm = await lean.command("theorem t (x : Nat) : x = x := sorry");

@@ -46,7 +46,7 @@ export class ProofService {
 
   async check(code: string) {
     const res = await this.lean.command(code);
-    if (!("env" in res)) throw new Error(res.message); // LeanError: the REPL failed
+    if (this.lean.isError(res)) throw new Error(res.message); // the REPL failed
     return { valid: !res.hasErrors(), messages: res.messages, env: res.env };
   }
 }
@@ -55,6 +55,12 @@ export class ProofService {
 Results are returned exactly as `lean-interact` gives them (`CommandResponse`,
 `ProofStepResponse` or `LeanError`), so its helpers (`getErrors()`, `hasErrors()`,
 `leanCodeIsValid()`, InfoTrees...) all work.
+
+Tell a `LeanError` (the REPL itself failed, e.g. an unknown `env`) from a response with
+`lean.isError(res)`, which narrows the type. In an ESM app `res instanceof LeanError` (imported from
+`lean-interact`) works too. Don't use `"env" in res`: `LeanError` allows any key, so TypeScript
+won't narrow on it. Lean errors in your code are not a `LeanError`; they are messages on the
+response (`res.hasErrors()`).
 
 ### LeanService
 
@@ -67,6 +73,7 @@ Results are returned exactly as `lean-interact` gives them (`CommandResponse`,
 | `runBatch(requests, { timeoutPerCmd, onProgress }?)` | Parallel in pool mode, sequential otherwise; a request that throws yields its `Error` |
 | `server` | The underlying `AutoLeanServer` / `LeanServer` / `LeanServerPool` (started on access) |
 | `config` | The `LeanREPLConfig` |
+| `isError(result)` | Type guard: `true` for a `LeanError` |
 | `close()` | Kill the REPL(s); the next request starts a new server |
 
 `options` are `lean-interact` run options: `timeout` (ms), `signal`, `verbose`, and

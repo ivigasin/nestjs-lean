@@ -11,7 +11,14 @@ import {
   loadLeanInteract,
   type LeanModuleOptions,
 } from "../src";
-import { FakeAutoServer, FakeConfig, FakePool, FakeServer, fakeLeanInteract } from "./fake-lean-interact";
+import {
+  FakeAutoServer,
+  FakeConfig,
+  FakeLeanError,
+  FakePool,
+  FakeServer,
+  fakeLeanInteract,
+} from "./fake-lean-interact";
 
 async function compile(imports: unknown[]) {
   const moduleRef = await Test.createTestingModule({ imports: imports as never[] })
@@ -106,6 +113,15 @@ describe("LeanService", () => {
     assert.deepEqual(progress, ["1/3", "2/3", "3/3"]);
     assert.ok(results[1] instanceof Error);
     assert.deepEqual((results[2] as unknown as { options: unknown }).options, { verbose: undefined, timeout: 50 });
+  });
+
+  it("tells LeanError results apart and narrows their type", async () => {
+    const { service } = await compile([LeanModule.forRoot({})]);
+    const failed: unknown = new FakeLeanError("unknown environment");
+    assert.equal(service.isError(failed), true);
+    if (service.isError(failed)) assert.equal(failed.message, "unknown environment");
+    assert.equal(service.isError(await service.command("#eval 1")), false);
+    assert.equal(service.isError(null), false);
   });
 
   it("delegates batches to the pool", async () => {

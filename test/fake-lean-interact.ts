@@ -26,6 +26,10 @@ export class FakeServer {
 
 export class FakeAutoServer extends FakeServer {}
 
+export class FakeLeanError {
+  constructor(readonly message = "unknown environment") {}
+}
+
 export class FakePool {
   closed = false;
   constructor(
@@ -50,6 +54,7 @@ export function fakeLeanInteract(): LeanInteract {
     LeanServer: FakeServer,
     AutoLeanServer: FakeAutoServer,
     LeanServerPool: FakePool,
+    LeanError: FakeLeanError,
     command: (v: object) => ({ kind: "Command", ...v }),
     fileCommand: (v: object) => ({ kind: "FileCommand", ...v }),
     proofStep: (v: object) => ({ kind: "ProofStep", ...v }),

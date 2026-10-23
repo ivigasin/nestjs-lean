@@ -1,6 +1,6 @@
 {
   "name": "nestjs-lean",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "NestJS module for the Lean 4 theorem prover, built on lean-interact.",
   "keywords": [
     "nestjs",
