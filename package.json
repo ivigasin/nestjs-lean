@@ -1,0 +1,62 @@
+{
+  "name": "nestjs-lean",
+  "version": "0.1.0",
+  "description": "NestJS module for the Lean 4 theorem prover, built on lean-interact.",
+  "keywords": [
+    "nestjs",
+    "lean",
+    "lean4",
+    "theorem proving",
+    "REPL"
+  ],
+  "license": "MIT",
+  "author": "Igor Vigasin",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ivigasin/nestjs-lean.git"
+  },
+  "homepage": "https://github.com/ivigasin/nestjs-lean#readme",
+  "bugs": {
+    "url": "https://github.com/ivigasin/nestjs-lean/issues"
+  },
+  "type": "commonjs",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "tsc -p tsconfig.json && node scripts/run-tests.mjs",
+    "test:e2e": "tsc -p tsconfig.json && node scripts/run-tests.mjs --e2e",
+    "clean": "rm -rf dist build-test",
+    "prepublishOnly": "npm run clean && npm run build && npm test"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^11.0.0 || ^12.0.0",
+    "@nestjs/core": "^11.0.0 || ^12.0.0",
+    "lean-interact": ">=0.11.6 <1",
+    "reflect-metadata": "^0.1.12 || ^0.2.0"
+  },
+  "devDependencies": {
+    "@nestjs/common": "^12.2.0",
+    "@nestjs/core": "^12.2.0",
+    "@nestjs/testing": "^12.2.0",
+    "@types/node": "^24.19.2",
+    "lean-interact": "^0.11.6",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "typescript": "~5.9"
+  }
+}
